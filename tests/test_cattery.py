@@ -1,11 +1,14 @@
 import pytest
 
-from catinabox import cattery
+from catinabox import cattery, mccattery
 
 
-@pytest.fixture
-def cattery_client(scope='session'):
-    return cattery.Cattery()
+@pytest.fixture(params=[
+    cattery.Cattery,
+    mccattery.McCattery
+])
+def cattery_client(request):
+    return request.param()
 
 ###########################################################################
 # add_cats
@@ -30,7 +33,6 @@ def test__remove_cat__succeeds(cattery_client):
 
 
 def test__remove_cat__no_cats__fails(cattery_client):
-    cattery_client
     with pytest.raises(cattery.CatNotFound):
         cattery_client.remove_cat("Fluffles")
 
